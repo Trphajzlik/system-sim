@@ -21,3 +21,4 @@ OUTPUT_PATH = "history.csv"
 
 COLOURS = ['r', 'g', 'b', 'y']
 GRAPH_PATH = "graph.png"
+DRAW_STATE = [True, True, True, False]
