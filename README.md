@@ -6,3 +6,5 @@ Then just run the `main.py`.
 
 You'll get the whole history of simulation in csv format in `OUTPUT_FILE`, and
 generated graph of the history in `GRAPH_PATH`.
+
+In `model_overview.png` you can see overview of our model.
