@@ -1,24 +1,47 @@
 N_STATES = 4
 
-INIT_STATE = [1.5, 0.5, 2.5, 0]
+NAMES = ["a", "b", "c", "step_count"]
+
+INIT_STATE = {
+    "a": 1.5,
+    "b": 0.5,
+    "c": 2.5,
+    "step_count": 0
+}
 
 def rule_0(state):
-    return state[0] + 0.5 * state[1] - 0.25 * state[2]
+    return state["a"] + 0.5 * state["b"] - 0.25 * state["c"]
 
 def rule_1(state):
-    return 0.5* state[0] + state[1] - 0.5 * state[2]
+    return 0.5* state["a"] + state["b"] - 0.5 * state["c"]
 
 def rule_2(state):
-    return min(state[0], state[1])
+    return min(state["a"], state["b"])
 
 def rule_3(state):
-    return state[3] + 1
+    return state["c"] + 1
 
-RULES = [rule_0, rule_1, rule_2, rule_3]
+RULES = {
+    "a": rule_0,
+    "b": rule_1,
+    "c": rule_2,
+    "step_count": rule_3
+}
 
 STEPS = 10
 OUTPUT_PATH = "history.csv"
 
-COLOURS = ['r', 'g', 'b', 'y']
+COLOURS = {
+    "a": 'r',
+    "b": 'g',
+    "c": 'b',
+    "step_count": 'y'
+}
+
 GRAPH_PATH = "graph.png"
-DRAW_STATE = [True, True, True, False]
+DRAW_STATE = {
+    "a": True,
+    "b": True,
+    "c": True,
+    "step_count": False
+}
