@@ -1,5 +1,5 @@
 from math import floor
-from constants import CAP50, CAP75, CAP90, CAP100, RUMOR_IMPACT, AD_IMPACT, AD_DROPOFF, BUS_EFFICIENCY, TICKET_COST, FORGET, MEM_RELEVANCE
+from constants import CAP50, CAP75, CAP90, CAP100, RUMOR_IMPACT, AD_IMPACT, AD_DROPOFF, BUS_EFFICIENCY, TICKET_COST, FORGET, MEM_RELEVANCE, NAT_INCL_REL
 
 # TODO: Review function `incl`, it is the most important
 # part of our model, so it has to do what we want it
@@ -33,7 +33,7 @@ def capacity_opinion(sum_used, max_cap):
 
 def ad_opinion(ads):
     # Spending 500.000 will increase mult opinion by AD_IMPACT%
-    return 1 + 0.01 * ((2 * AD_IMPACT) - AD_IMPACT / (AD_DROPOFF**floor(0.00001 * ads)))
+    return 0.01 * ((2 * AD_IMPACT) - AD_IMPACT / (AD_DROPOFF**floor(0.00001 * ads)))
 
 def clamp(i):
     if i < 0:
@@ -67,7 +67,7 @@ def incl(nat_incl, pop_c, relevant_history, ads):
     #p_n = clamp(nat_incl * op_n * op_a)
 
     #return used_c * p_u + (pop_c - used_c) * p_n
-    return pop_c * clamp(nat_incl * (1+op_cap) * op_a)
+    return pop_c * clamp((NAT_INCL_REL * nat_incl + op_cap + op_a) / (1 + NAT_INCL_REL))
 
 
 def ticket_sales(sum_used):
@@ -81,13 +81,13 @@ def expenses(max_cap):
 # so you can get creative. Also what param it takes
 
 def spend_ad_basic(sum_used, max_cap, budget):
-    if sum_used / max_cap <= 0.6:
+    if sum_used / max_cap < BUS_EFFICIENCY:
         # 0.5 mil
         return 500000
     return 0
 
 def spend_invest_basic(sum_used, max_cap, budget):
-    if sum_used / max_cap >= 0.8:
+    if sum_used / max_cap > BUS_EFFICIENCY:
         # 5 mil
         return 5000000
     return 0
