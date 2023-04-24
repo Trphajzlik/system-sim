@@ -69,7 +69,7 @@ def w_expenses(state):
     return expenses(state["max_capacity"])
 
 def w_incl(c, state):
-    ads = [state[f"ad{i}"] for i in range(3)]
+    ads = sum([state[f"ad{i}"] for i in range(3)])
     next_used = incl(NAT_INCL[c], POP_DISTR[c], state[f"used{c}"], total_used(state), state["max_capacity"], ads)
     # Only up to 100% of a class can travel
     assert next_used <= POP_DISTR[c]
