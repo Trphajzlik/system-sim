@@ -21,8 +21,8 @@ GRAPH_ENTRY_NAMES = {
 COLOURS = {
     "used%" : {
         "used0%": 'r', "used1%": 'g', "used2%": 'b',
-        "used3%": 'y', "used4%": 'k', "invested": 'm',
-        "ad_bought": 'c'
+        "used3%": 'y', "used4%": 'k', "invested": 'om:',
+        "ad_bought": 'oc:'
     },
     "money" : {
         "budget" : 'r',
