@@ -1,3 +1,4 @@
+from copy import deepcopy
 from rules import incl, ticket_sales, expenses, spend_ad, spend_invest, SPEND_AD, SPEND_INVEST
 
 N_STATES = 16
@@ -50,10 +51,8 @@ INIT_STATE = {
     "invest3" : 0, "invest4" : 0, "invest5" : 0
 }
 
-# Choose investments strategy
-AD_STRATEGY = "basic"
-INVEST_STRATEGY = "basic"
-
+def GET_INIT_STATE():
+    return deepcopy(INIT_STATE)
 
 # Wrapper and helper functions for rules
 
@@ -76,11 +75,11 @@ def w_incl(c, state):
     assert next_used <= POP_DISTR[c]
     return next_used
 
-def w_spend_ad(state):
-    return spend_ad(AD_STRATEGY, total_used(state), state["max_capacity"], state["budget"])
+def w_spend_ad(ad_strategy, state):
+    return spend_ad(ad_strategy, total_used(state), state["max_capacity"], state["budget"])
 
-def w_spend_invest(state):
-    return spend_invest(INVEST_STRATEGY, total_used(state), state["max_capacity"], state["budget"])
+def w_spend_invest(invest_strategy, state):
+    return spend_invest(invest_strategy, total_used(state), state["max_capacity"], state["budget"])
 
 RULES = {
     # Logic if population chooses to use public transport
@@ -93,29 +92,38 @@ RULES = {
 
     # Budget changes based on ticket sales, buying fuel,
     # spending on ads, and spending on buying new buses
-    "budget" : (lambda s: s["budget"] + w_ticket_sales(s) - w_expenses(s) - w_spend_ad(s) - w_spend_invest(s)),
+    "budget" : (lambda s: 0/0),
 
     # Ads are in circulation for 3 months
-    "ad0" : (lambda s: w_spend_ad(s)),
+    "ad0" : (lambda s: 0/0),
     "ad1" : (lambda s: s["ad0"]), "ad2" : (lambda s: s["ad1"]),
 
     # It takes 6 months to buy a bus
     # Spending 5 milion will increase max capacity by 5000
-    "invest0" : (lambda s: 0.01 * w_spend_invest(s)),
+    "invest0" : (lambda s: 0/0),
     "invest1" : (lambda s: s["invest0"]), "invest2" : (lambda s: s["invest1"]),
     "invest3" : (lambda s: s["invest2"]), "invest4" : (lambda s: s["invest3"]),
     "invest5" : (lambda s: s["invest4"])
 }
 
+def GET_RULES(ad_strategy, invest_strategy):
+    rules = deepcopy(RULES)
+    rules["budget"] = (lambda s: s["budget"] + w_ticket_sales(s) - w_expenses(s) - w_spend_ad(ad_strategy, s) - w_spend_invest(invest_strategy, s))
+    rules["ad0"] = (lambda s: w_spend_ad(ad_strategy, s))
+    rules["invest0"] = (lambda s: 0.01 * w_spend_invest(invest_strategy, s))
+    return rules
+
+TESTED_STRATEGIES = [("basic","basic"), ("constant", "constant")]
+
 STEPS = 120
 OUTPUT_PATH = "history.csv"
 
-def check_model():
+def check_model(ad_strategy, invest_strategy):
     for d in [NAMES, INIT_STATE, RULES]:
         assert N_STATES == len(d)
     for d in [INIT_STATE, RULES]:
         for n in NAMES:
             assert n in d
     assert TOTAL_POP == sum(POP_DISTR)
-    assert AD_STRATEGY in SPEND_AD
-    assert INVEST_STRATEGY in SPEND_INVEST
+    assert ad_strategy in SPEND_AD
+    assert invest_strategy in SPEND_INVEST

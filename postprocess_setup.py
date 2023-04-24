@@ -40,7 +40,7 @@ def transform1(s):
         if r > 0:
             return log(r)
         if r < 0:
-            return -log(r)
+            return -log(-r)
         return 0
     return {
         "budget" :  clog(s["budget"]),

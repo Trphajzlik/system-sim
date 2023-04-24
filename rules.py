@@ -10,6 +10,7 @@ def cap_opinion(sum_used, max_cap):
     #    + "personal" rumors that affect others
     #  - o_2 influences ppl who didn't,
     #    meaning "common" rumors
+    # Multiplikativní!
     ratio = sum_used / max_cap
     if ratio < 0.5:
         return (1,1)
@@ -61,12 +62,20 @@ def spend_invest_basic(sum_used, max_cap, budget):
         return 5000000
     return 0
 
+def spend_ad_constant(sum_used, max_cap, budget):
+    return 0
+
+def spend_invest_constant(sum_used, max_cap, budget):
+    return 0
+
 
 SPEND_AD = {
-    "basic" : spend_ad_basic
+    "basic" : spend_ad_basic,
+    "constant": spend_ad_constant
 }
 SPEND_INVEST = {
-    "basic" : spend_invest_basic
+    "basic" : spend_invest_basic,
+    "constant": spend_invest_constant
 }
 
 def spend_ad(strategy, sum_used, max_cap, budget):
