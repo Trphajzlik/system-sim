@@ -1,5 +1,5 @@
 from math import floor
-from constants import CAP50, CAP75, CAP90, CAP100, RUMOR_IMPACT, AD_IMPACT, AD_DROPOFF, BUS_EFFICIENCY, TICKET_COST, FORGET
+from constants import CAP50, CAP75, CAP90, CAP100, RUMOR_IMPACT, AD_IMPACT, AD_DROPOFF, BUS_EFFICIENCY, TICKET_COST, FORGET, MEM_RELEVANCE
 
 # TODO: Review function `incl`, it is the most important
 # part of our model, so it has to do what we want it
@@ -32,14 +32,7 @@ def capacity_opinion(sum_used, max_cap):
     #return (1+cap, 1+cap*RUMOR_IMPACT)
 
 def ad_opinion(ads):
-    # Spending 500.000 will increase mult opinion by 5%
-    # Spending 1.000.000 will increase mult opinion by 7.5%
-    # Spending 1.500.000 will increase mult opinion by 8.75%
-    # a_0 = 0
-    # a_n = a_{n-1} + 5 / 2^{n-1}
-    # Wolfram says that it is equal to
-    # 10 - 5/2^n
-    # Maybe play with the constant `2` -> 1.8?
+    # Spending 500.000 will increase mult opinion by AD_IMPACT%
     return 1 + 0.01 * ((2 * AD_IMPACT) - AD_IMPACT / (AD_DROPOFF**floor(0.00001 * ads)))
 
 def clamp(i):
@@ -56,11 +49,16 @@ def incl(nat_incl, pop_c, relevant_history, ads):
     #  - rumors about comfort (i.e. capacity)
     #  - ads
     op_cap = 0
-    forgetfulness = FORGET
+    forgetfulness = 1
+    mem_offset = 0
     for total_u, max_c in reversed(relevant_history):
         op_cap = forgetfulness * capacity_opinion(total_u, max_c)
+        mem_offset += forgetfulness
         forgetfulness *= FORGET
+        if forgetfulness < MEM_RELEVANCE:
+            break
 
+    op_cap = op_cap / mem_offset
     op_a = ad_opinion(ads)
 
     # Probability that someone who did use will use
