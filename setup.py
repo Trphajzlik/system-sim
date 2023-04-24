@@ -9,7 +9,7 @@ NAMES = [
     "invest0", "invest1", "invest2", "invest3", "invest4", "invest5"
 ]
 
-PERC_DISTR = [0.275, 0.25, 0.225, 0.15, 0.1]
+PERC_DISTR = [0.275, 0.25, 0.225, 0.15, 0.10]
 NAT_INCL = [0.9, 0.7, 0.4, 0.15, 0.05]
 
 TOTAL_POP = 500000.0
@@ -97,7 +97,7 @@ RULES = {
 
     # Ads are in circulation for 3 months
     "ad0" : (lambda s: w_spend_ad(s)),
-    "ad1" : (lambda s: s["ad1"]), "ad2" : (lambda s: s["ad1"]),
+    "ad1" : (lambda s: s["ad0"]), "ad2" : (lambda s: s["ad1"]),
 
     # It takes 6 months to buy a bus
     # Spending 5 milion will increase max capacity by 5000
@@ -110,33 +110,10 @@ RULES = {
 STEPS = 120
 OUTPUT_PATH = "history.csv"
 
-COLOURS = {
-    "used0": 'r', "used1": 'r', "used2": 'r',
-    "used3": 'r', "used4": 'r',
-    "max_capacity" : 'r', "budget" : 'r',
-    "ad0" : 'r', "ad1" : 'r', "ad2" : 'r',
-    "invest0" : 'r', "invest1" : 'r', "invest2" : 'r',
-    "invest3" : 'r', "invest4" : 'r', "invest5" : 'r'
-}
-
-GRAPH_PATH = "graph.png"
-# TODO: Add multiple draw_states so we can generate multiple graphs
-#       Also maybe split this into two files,
-#       second setup for postprocessing
-DRAW_STATE = {
-    "used0": True, "used1": True, "used2": True,
-    "used3": True, "used4": True,
-    "max_capacity" : True, "budget" : True,
-    "ad0" : True, "ad1" : True, "ad2" : True,
-    "invest0" : True, "invest1" : True, "invest2" : True,
-    "invest3" : True, "invest4" : True, "invest5" : True
-}
-
 def check_model():
-    i = 0
-    for d in [NAMES, INIT_STATE, RULES, COLOURS, DRAW_STATE]:
+    for d in [NAMES, INIT_STATE, RULES]:
         assert N_STATES == len(d)
-    for d in [INIT_STATE, RULES, COLOURS, DRAW_STATE]:
+    for d in [INIT_STATE, RULES]:
         for n in NAMES:
             assert n in d
     assert TOTAL_POP == sum(POP_DISTR)

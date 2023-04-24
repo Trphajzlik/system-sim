@@ -19,7 +19,7 @@ def rule_2(state):
     return min(state["a"], state["b"])
 
 def rule_3(state):
-    return state["c"] + 1
+    return state["step_count"] + 1
 
 RULES = {
     "a": rule_0,
@@ -31,17 +31,10 @@ RULES = {
 STEPS = 10
 OUTPUT_PATH = "history.csv"
 
-COLOURS = {
-    "a": 'r',
-    "b": 'g',
-    "c": 'b',
-    "step_count": 'y'
-}
 
-GRAPH_PATH = "graph.png"
-DRAW_STATE = {
-    "a": True,
-    "b": True,
-    "c": True,
-    "step_count": False
-}
+def check_model():
+    for d in [NAMES, INIT_STATE, RULES]:
+        assert N_STATES == len(d)
+    for d in [INIT_STATE, RULES]:
+        for n in NAMES:
+            assert n in d

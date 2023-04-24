@@ -1,4 +1,4 @@
-
+from copy import deepcopy
 class Engine:
     def __init__(self, names, init_state, rules):
         self.history = []
@@ -7,8 +7,8 @@ class Engine:
         self.rules = rules
 
     def step(self):
-        self.history.append(self.curr_state)
-        self.curr_state = dict()
+        self.history.append(deepcopy(self.curr_state))
+        self.curr_state.clear()
         for name in self.state_names:
             rule = self.rules[name]
             self.curr_state[name] = rule(self.history[-1])
@@ -29,7 +29,7 @@ class Engine:
     def state_to_string(self, state):
         output = ""
         delim = ""
-        for _,s in state.items():
+        for _,s in sorted(state.items(), key=(lambda e: e[0])):
             output += delim
             output += str(s)
             delim = ";"
