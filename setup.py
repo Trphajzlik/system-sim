@@ -75,42 +75,44 @@ def w_incl(c, state):
     assert next_used <= POP_DISTR[c]
     return next_used
 
-def w_spend_ad(ad_strategy, state):
+def w_spend_ad(ad_strategy, history):
+    state = history[-1]
     return spend_ad(ad_strategy, total_used(state), state["max_capacity"], state["budget"])
 
-def w_spend_invest(invest_strategy, state):
+def w_spend_invest(invest_strategy, history):
+    state = history[-1]
     return spend_invest(invest_strategy, total_used(state), state["max_capacity"], state["budget"])
 
 RULES = {
     # Logic if population chooses to use public transport
-    "used0": (lambda s: w_incl(0, s)), "used1": (lambda s: w_incl(1, s)),
-    "used2": (lambda s: w_incl(2, s)), "used3": (lambda s: w_incl(3, s)),
-    "used4": (lambda s: w_incl(4, s)),
+    "used0": (lambda h: w_incl(0, h[-1])), "used1": (lambda h: w_incl(1, h[-1])),
+    "used2": (lambda h: w_incl(2, h[-1])), "used3": (lambda h: w_incl(3, h[-1])),
+    "used4": (lambda h: w_incl(4, h[-1])),
 
     # Capacity increases after 6 months after deciding to invest
-    "max_capacity" : (lambda s: s["max_capacity"] + s["invest5"]),
+    "max_capacity" : (lambda h: h[-1]["max_capacity"] + h[-1]["invest5"]),
 
     # Budget changes based on ticket sales, buying fuel,
     # spending on ads, and spending on buying new buses
-    "budget" : (lambda s: 0/0),
+    "budget" : (lambda h: 0/0),
 
     # Ads are in circulation for 3 months
-    "ad0" : (lambda s: 0/0),
-    "ad1" : (lambda s: s["ad0"]), "ad2" : (lambda s: s["ad1"]),
+    "ad0" : (lambda h: 0/0),
+    "ad1" : (lambda h: h[-1]["ad0"]), "ad2" : (lambda h: h[-1]["ad1"]),
 
     # It takes 6 months to buy a bus
     # Spending 5 milion will increase max capacity by 5000
-    "invest0" : (lambda s: 0/0),
-    "invest1" : (lambda s: s["invest0"]), "invest2" : (lambda s: s["invest1"]),
-    "invest3" : (lambda s: s["invest2"]), "invest4" : (lambda s: s["invest3"]),
-    "invest5" : (lambda s: s["invest4"])
+    "invest0" : (lambda h: 0/0),
+    "invest1" : (lambda h: h[-1]["invest0"]), "invest2" : (lambda h: h[-1]["invest1"]),
+    "invest3" : (lambda h: h[-1]["invest2"]), "invest4" : (lambda h: h[-1]["invest3"]),
+    "invest5" : (lambda h: h[-1]["invest4"])
 }
 
 def GET_RULES(ad_strategy, invest_strategy):
     rules = deepcopy(RULES)
-    rules["budget"] = (lambda s: s["budget"] + w_ticket_sales(s) - w_expenses(s) - w_spend_ad(ad_strategy, s) - w_spend_invest(invest_strategy, s))
-    rules["ad0"] = (lambda s: w_spend_ad(ad_strategy, s))
-    rules["invest0"] = (lambda s: 0.01 * w_spend_invest(invest_strategy, s))
+    rules["budget"] = (lambda h: h[-1]["budget"] + w_ticket_sales(h[-1]) - w_expenses(h[-1]) - w_spend_ad(ad_strategy, h) - w_spend_invest(invest_strategy, h))
+    rules["ad0"] = (lambda h: w_spend_ad(ad_strategy, h))
+    rules["invest0"] = (lambda h: 0.01 * w_spend_invest(invest_strategy, h))
     return rules
 
 TESTED_STRATEGIES = [("basic","basic"), ("constant", "constant")]

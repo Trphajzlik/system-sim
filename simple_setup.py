@@ -9,16 +9,20 @@ INIT_STATE = {
     "step_count": 0
 }
 
-def rule_0(state):
+def rule_0(history):
+    state = history[-1]
     return state["a"] + 0.5 * state["b"] - 0.25 * state["c"]
 
-def rule_1(state):
+def rule_1(history):
+    state = history[-1]
     return 0.5* state["a"] + state["b"] - 0.5 * state["c"]
 
-def rule_2(state):
+def rule_2(history):
+    state = history[-1]
     return min(state["a"], state["b"])
 
-def rule_3(state):
+def rule_3(history):
+    state = history[-1]
     return state["step_count"] + 1
 
 RULES = {

@@ -11,7 +11,7 @@ class Engine:
         self.curr_state.clear()
         for name in self.state_names:
             rule = self.rules[name]
-            self.curr_state[name] = rule(self.history[-1])
+            self.curr_state[name] = rule(self.history)
 
     def simulate(self, steps):
         for _ in range(steps):
