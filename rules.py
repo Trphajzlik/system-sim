@@ -1,5 +1,5 @@
 from math import floor
-from constants import CAP50, CAP75, CAP90, CAP100, RUMOR_IMPACT, AD_IMPACT, AD_DROPOFF, BUS_EFFICIENCY, TICKET_COST
+from constants import CAP50, CAP75, CAP90, CAP100, RUMOR_IMPACT, AD_IMPACT, AD_DROPOFF, BUS_EFFICIENCY, TICKET_COST, FORGET
 
 # TODO: Review function `incl`, it is the most important
 # part of our model, so it has to do what we want it
@@ -8,7 +8,7 @@ from constants import CAP50, CAP75, CAP90, CAP100, RUMOR_IMPACT, AD_IMPACT, AD_D
 def lin_interpolate(x, x_0, y_0, x_1, y_1):
     return y_0 * (x_1 - x) / (x_1 - x_0) + y_1 * (x - x_0) / (x_1 - x_0)
 
-def cap_opinion(sum_used, max_cap):
+def capacity_opinion(sum_used, max_cap):
     # Returns pair of opinions (o_1, o_2):
     #  - o_1 influences ppl who used public
     #    transport, meaning personal experience
@@ -26,7 +26,10 @@ def cap_opinion(sum_used, max_cap):
         cap = lin_interpolate(ratio, 0.9, CAP90, 1.0, CAP100)
     else: # Some didn't even get into bus
         cap = CAP100
-    return (1+cap, 1+cap*RUMOR_IMPACT)
+    # We wont differentiate between personal experience
+    # and rummors so we can more easily do "memory"
+    return cap
+    #return (1+cap, 1+cap*RUMOR_IMPACT)
 
 def ad_opinion(ads):
     # Spending 500.000 will increase mult opinion by 5%
@@ -46,22 +49,27 @@ def clamp(i):
         return 1
     return i
 
-def incl(nat_incl, pop_c, used_c, sum_used, max_cap, ads):
+def incl(nat_incl, pop_c, relevant_history, ads):
     # Each person from a class has a probability that they will use
     # public transport. This is influenced by:
     #  - "class inclination"
     #  - rumors about comfort (i.e. capacity)
     #  - ads
+    op_cap = 0
+    forgetfulness = FORGET
+    for total_u, max_c in reversed(relevant_history):
+        op_cap = forgetfulness * capacity_opinion(total_u, max_c)
+        forgetfulness *= FORGET
 
-    op_u, op_n = cap_opinion(sum_used, max_cap)
     op_a = ad_opinion(ads)
 
     # Probability that someone who did use will use
-    p_u = clamp(nat_incl * op_u * op_a)
+    #p_u = clamp(nat_incl * op_u * op_a)
     # Probability that someone who didnt use will use
-    p_n = clamp(nat_incl * op_n * op_a)
+    #p_n = clamp(nat_incl * op_n * op_a)
 
-    return used_c * p_u + (pop_c - used_c) * p_n
+    #return used_c * p_u + (pop_c - used_c) * p_n
+    return pop_c * clamp(nat_incl * (1+op_cap) * op_a)
 
 
 def ticket_sales(sum_used):

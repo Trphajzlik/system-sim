@@ -4,6 +4,7 @@ CAP90 = -0.2 # der = 0.04
 CAP100 = -0.7 # der = 0.05
 
 RUMOR_IMPACT = 0.5
+FORGET = 0.5
 
 AD_IMPACT = 5
 AD_DROPOFF = 2

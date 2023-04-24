@@ -68,9 +68,10 @@ def w_ticket_sales(state):
 def w_expenses(state):
     return expenses(state["max_capacity"])
 
-def w_incl(c, state):
-    ads = sum([state[f"ad{i}"] for i in range(3)])
-    next_used = incl(NAT_INCL[c], POP_DISTR[c], state[f"used{c}"], total_used(state), state["max_capacity"], ads)
+def w_incl(c, history):
+    ads = sum([history[-1][f"ad{i}"] for i in range(3)])
+    relevant_history = list(map(lambda s: (total_used(s), s["max_capacity"]), history))
+    next_used = incl(NAT_INCL[c], POP_DISTR[c], relevant_history, ads)
     # Only up to 100% of a class can travel
     assert next_used <= POP_DISTR[c]
     return next_used
@@ -85,9 +86,9 @@ def w_spend_invest(invest_strategy, history):
 
 RULES = {
     # Logic if population chooses to use public transport
-    "used0": (lambda h: w_incl(0, h[-1])), "used1": (lambda h: w_incl(1, h[-1])),
-    "used2": (lambda h: w_incl(2, h[-1])), "used3": (lambda h: w_incl(3, h[-1])),
-    "used4": (lambda h: w_incl(4, h[-1])),
+    "used0": (lambda h: w_incl(0, h)), "used1": (lambda h: w_incl(1, h)),
+    "used2": (lambda h: w_incl(2, h)), "used3": (lambda h: w_incl(3, h)),
+    "used4": (lambda h: w_incl(4, h)),
 
     # Capacity increases after 6 months after deciding to invest
     "max_capacity" : (lambda h: h[-1]["max_capacity"] + h[-1]["invest5"]),
