@@ -1,59 +1,55 @@
-from setup import POP_DISTR
+from setup import TOTAL_POP
 from math import log
+from constants import BUS_EFFICIENCY
 
 N_GRAPHS = 2
 
 GRAPH_NAMES = [
-    "used%",
+    "used",
     "money"
 ]
 
 GRAPH_PATHS = {
-    "used%" : "graph0.png",
+    "used" : "graph0.png",
     "money" : "graph1.png"
 }
 
 GRAPH_ENTRY_NAMES = {
-    "used%" : [f"used{i}%" for i in range(5)] + ["invested", "ad_bought"],
-    "money" : ["budget", "invest", "ad"]
+    "used" : ["used", "max_c", "c75", "eff_c", "invested", "ad_bought"],
+    "money" : ["budget"]
 }
 
 COLOURS = {
-    "used%" : {
-        "used0%": 'r', "used1%": 'g', "used2%": 'b',
-        "used3%": 'y', "used4%": 'k', "invested": 'om:',
+    "used" : {
+        "used" : 'k',
+        "max_c" : 'g',
+        "c75" : 'r',
+        "eff_c" : 'b',
+        "invested": 'om:',
         "ad_bought": 'oc:'
     },
     "money" : {
-        "budget" : 'r',
-        "invest" : 'm',
-        "ad" : 'y'
+        "budget" : 'y'
     }
 }
 
 def transform0(s):
-    return dict ({
-        f"used{i}%" : s[f"used{i}"] / POP_DISTR[i] for i in range(5)
-    }, **{
-        "invested" : s["invest0"] * 0.1 / 5000000,
-        "ad_bought" : s["ad0"] * 0.1 / 500000
-    })
+    return {
+        "used" : s["used"],
+        "max_c" : s["max_capacity"],
+        "c75" : s["max_capacity"] * 0.75,
+        "eff_c" : s["max_capacity"] * BUS_EFFICIENCY,
+        "invested" : TOTAL_POP * s["invest0"] * 0.1 / 50000,
+        "ad_bought" : TOTAL_POP * s["ad0"] * 0.1 / 500000
+    }
 
 def transform1(s):
-    def clog(r):
-        if r > 0:
-            return log(r)
-        if r < 0:
-            return -log(-r)
-        return 0
     return {
-        "budget" :  clog(s["budget"]),
-        "invest" : clog(s["invest0"]),
-        "ad" : clog(s["ad0"])
+        "budget" :  s["budget"]
     }
 
 TRANSFORM = {
-    "used%" : transform0,
+    "used" : transform0,
     "money" : transform1
 }
 

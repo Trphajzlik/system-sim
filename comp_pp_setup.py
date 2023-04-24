@@ -1,4 +1,4 @@
-from setup import POP_DISTR
+from setup import TOTAL_POP
 
 def get_name(strat):
     ad_strat, spend_strat = strat
@@ -33,10 +33,7 @@ C_TESTED_NAMES = [
 ]
 
 def transform0(s):
-    sum_used = 0
-    for i in range(5):
-        sum_used += s[f"used{i}"]
-    return sum_used / sum(POP_DISTR)
+    return s["used"] / TOTAL_POP
 
 def transform1(s):
     return s["budget"]
