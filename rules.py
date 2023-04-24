@@ -1,9 +1,12 @@
 from math import floor
-from constants import CAP50, CAP70, CAP90, CAP100, CAP101, RUMOR_IMPACT, AD_IMPACT, AD_DROPOFF, BUS_EFFICIENCY, TICKET_COST
+from constants import CAP50, CAP75, CAP90, CAP100, RUMOR_IMPACT, AD_IMPACT, AD_DROPOFF, BUS_EFFICIENCY, TICKET_COST
 
 # TODO: Review function `incl`, it is the most important
 # part of our model, so it has to do what we want it
 # to do!
+
+def lin_interpolate(x, x_0, y_0, x_1, y_1):
+    return y_0 * (x_1 - x) / (x_1 - x_0) + y_1 * (x - x_0) / (x_1 - x_0)
 
 def cap_opinion(sum_used, max_cap):
     # Returns pair of opinions (o_1, o_2):
@@ -15,14 +18,14 @@ def cap_opinion(sum_used, max_cap):
     cap = 0
     if ratio < 0.5:
         cap = CAP50
-    elif ratio < 0.7:
-        cap = CAP70
+    elif ratio < 0.75:
+        cap = lin_interpolate(ratio, 0.5, CAP50, 0.75, CAP75)
     elif ratio < 0.9:
-        cap = CAP90
+        cap = lin_interpolate(ratio, 0.75, CAP75, 0.9, CAP90)
     elif ratio < 1.0:
-        cap = CAP100
+        cap = lin_interpolate(ratio, 0.9, CAP90, 1.0, CAP100)
     else: # Some didn't even get into bus
-        cap = CAP101
+        cap = CAP100
     return (1+cap, 1+cap*RUMOR_IMPACT)
 
 def ad_opinion(ads):

@@ -1,8 +1,7 @@
 CAP50 = 1.0
-CAP70 = 0.5
-CAP90 = 0
-CAP100 = -0.3
-CAP101 = -0.6
+CAP75 = 0.4 # der = 0.024
+CAP90 = -0.2 # der = 0.04
+CAP100 = -0.7 # der = 0.05
 
 RUMOR_IMPACT = 0.5
 
