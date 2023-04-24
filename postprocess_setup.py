@@ -14,14 +14,15 @@ GRAPH_PATHS = {
 }
 
 GRAPH_ENTRY_NAMES = {
-    "used%" : [f"used{i}%" for i in range(5)],
+    "used%" : [f"used{i}%" for i in range(5)] + ["invested", "ad_bought"],
     "money" : ["budget", "invest", "ad"]
 }
 
 COLOURS = {
     "used%" : {
         "used0%": 'r', "used1%": 'g', "used2%": 'b',
-        "used3%": 'y', "used4%": 'k',
+        "used3%": 'y', "used4%": 'k', "invested": 'm',
+        "ad_bought": 'c'
     },
     "money" : {
         "budget" : 'r',
@@ -31,9 +32,12 @@ COLOURS = {
 }
 
 def transform0(s):
-    return {
+    return dict ({
         f"used{i}%" : s[f"used{i}"] / POP_DISTR[i] for i in range(5)
-    }
+    }, **{
+        "invested" : s["invest0"] * 0.1 / 5000000,
+        "ad_bought" : s["ad0"] * 0.1 / 500000
+    })
 
 def transform1(s):
     def clog(r):
