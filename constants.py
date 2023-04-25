@@ -4,7 +4,10 @@ CAP90 = 0.4
 CAP100 = 0.1
 
 RUMOR_IMPACT = 0.5
-FORGET = 0.25
+FORGET = 0.5
+MEM_WEIGHT = 1.2
+# Lmao, (0.8,1.1) unstable
+# (0.75, 1.15) funny
 MEM_RELEVANCE = 0.05
 
 AD_IMPACT = 5

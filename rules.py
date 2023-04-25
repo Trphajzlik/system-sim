@@ -1,5 +1,5 @@
 from math import floor
-from constants import CAP50, CAP75, CAP90, CAP100, RUMOR_IMPACT, AD_IMPACT, AD_DROPOFF, BUS_EFFICIENCY, TICKET_COST, FORGET, MEM_RELEVANCE
+from constants import CAP50, CAP75, CAP90, CAP100, RUMOR_IMPACT, AD_IMPACT, AD_DROPOFF, BUS_EFFICIENCY, TICKET_COST, FORGET, MEM_RELEVANCE, MEM_WEIGHT
 
 # TODO: Review function `incl`, it is the most important
 # part of our model, so it has to do what we want it
@@ -36,6 +36,23 @@ def clamp(i):
         return 1
     return i
 
+def memory(pop_c, relevant_history):
+    mem_cap = 0
+    forgetfulness = 1
+    mem_offset = 0
+    for i in range(len(relevant_history)-2, -1, -1):
+        total_u, max_c = relevant_history[i]
+        step_op = forgetfulness * capacity_opinion(total_u, max_c)
+        mem_cap += step_op
+        mem_offset += forgetfulness
+        forgetfulness *= FORGET
+        if forgetfulness < MEM_RELEVANCE:
+            break
+    if mem_offset == 0:
+        return None
+    mem_cap = mem_cap / mem_offset
+    return mem_cap
+
 def incl(pop_c, relevant_history, ads):
     # Each person has a probability that they will use
     # public transport. This is influenced by:
@@ -44,28 +61,16 @@ def incl(pop_c, relevant_history, ads):
     # We def should add some affinity towards history
     # so that the constant spending converges at least a bit,
     # Or at least is less erradic
-    """
-    op_cap = 0
-    forgetfulness = 1
-    mem_offset = 0
-    for total_u, max_c in reversed(relevant_history):
-        step_op = forgetfulness * capacity_opinion(total_u, max_c)
-        #weighted_op = total_u * step_op + (pop_c - total_u) * step_op * RUMOR_IMPACT
-        # Adding using vs not using ppl, should create desired ad behaviour
-        #op_cap += weighted_op / pop_c
-        op_cap += step_op
-        mem_offset += forgetfulness
-        forgetfulness *= FORGET
-        if forgetfulness < MEM_RELEVANCE:
-            break
-
-    op_cap = op_cap / mem_offset
-    """
+    op_mem = memory(pop_c, relevant_history)
     used, max_c = relevant_history[-1]
     op_cap = capacity_opinion(used, max_c)
     op_a = ad_opinion(ads)
+    if op_mem is None:
+        op_weig = op_cap
+    else:
+        op_weig = (op_cap + op_mem * MEM_WEIGHT) / (MEM_WEIGHT + 1)
 
-    return used * clamp(op_cap * op_a) + (pop_c - used) * clamp(RUMOR_IMPACT * op_cap * op_a)
+    return used * clamp(op_weig * op_a) + (pop_c - used) * clamp(RUMOR_IMPACT * op_weig * op_a)
 
 
 def ticket_sales(sum_used):
