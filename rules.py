@@ -27,7 +27,7 @@ def capacity_opinion(sum_used, max_cap):
 
 def ad_opinion(ads):
     # Spending 500.000 will increase mult opinion by AD_IMPACT%
-    return 1 + 0.01 * ((2 * AD_IMPACT) - AD_IMPACT * (AD_DROPOFF**(-floor(AD_PEAK * ads))))
+    return 1 + 0.01 * ((2 * AD_IMPACT) - AD_IMPACT * (AD_DROPOFF**(-floor(AD_PEAK * ads)))) - AD_IMPACT * 0.01
 
 def clamp(i):
     if i < 0:
