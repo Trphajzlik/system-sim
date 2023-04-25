@@ -35,12 +35,12 @@ COLOURS = {
 
 def transform0(s):
     return {
-        "used" : s["used"],
-        "max_c" : s["max_capacity"],
-        "c75" : s["max_capacity"] * 0.75,
-        "eff_c" : s["max_capacity"] * BUS_EFFICIENCY,
-        "invested" : TOTAL_POP * s["invest0"] * 0.1,
-        "ad_bought" : TOTAL_POP * s["ad0"] * 0.1
+        "used" : s["used"] / TOTAL_POP,
+        "max_c" : s["max_capacity"] / TOTAL_POP,
+        "c75" : s["max_capacity"] * 0.75 / TOTAL_POP,
+        "eff_c" : s["max_capacity"] * BUS_EFFICIENCY / TOTAL_POP,
+        "invested" : s["invest0"] * 0.1,
+        "ad_bought" : s["ad0"] * 0.1
     }
 
 def transform1(s):
