@@ -1,6 +1,5 @@
 from math import floor
-from constants import CAP_VALS, AD_VALS, RUMOR_IMPACT, BUS_EFFICIENCY, TICKET_COST, FORGET, MEM_RELEVANCE, MEM_WEIGHT
-
+from constants import TOTAL_POP, CAP_VALS, AD_VALS, RUMOR_IMPACT, BUS_EFFICIENCY, TICKET_COST, FORGET, MEM_RELEVANCE, MEM_WEIGHT, ONE_BUS, ONE_AD
 # TODO: Review function `incl`, it is the most important
 # part of our model, so it has to do what we want it
 # to do!
@@ -12,7 +11,7 @@ def lin_interpolate_set(x, vals):
     # We assume that xs are ordered
     if x < vals[0][0]:
         return vals[0][1]
-    if x > vals[-1][0]:
+    if x >= vals[-1][0]:
         return vals[-1][1]
     x_l, y_l = vals[0]
     for x_u, y_u in vals[1:]:
@@ -87,7 +86,7 @@ def spend_ad_basic(history):
     max_cap = history[-1]["max_capacity"]
     if sum_used / max_cap < BUS_EFFICIENCY:
         # 0.5 mil
-        return 500000
+        return ONE_AD
     return 0
 
 def spend_invest_basic(history):
@@ -95,7 +94,7 @@ def spend_invest_basic(history):
     max_cap = history[-1]["max_capacity"]
     if sum_used / max_cap > BUS_EFFICIENCY:
         # 5 mil
-        return 5000000
+        return ONE_BUS
     return 0
 
 def spend_ad_constant(history):
@@ -109,15 +108,60 @@ def spend_ad_try(history):
     if l < 40:
         return 0
     if l < 60:
-        return 500000
+        return ONE_AD
     return 0
+
+def spend_invest_basic_memory(history):
+    used = history[-1]["used"]
+    max_cap = history[-1]["max_capacity"]
+    bonus_max_cap = sum([history[-1][f"invest{i}"] for i in range(6)])
+    if used / (max_cap + bonus_max_cap) > BUS_EFFICIENCY:
+        return ONE_BUS
+    return 0
+
+
+def did_invest(history):
+    for i, s in enumerate(history):
+        if s["invest0"] > 0:
+            return i
+    return False
+
+def spend_ad_pop_aware(history):
+    if did_invest(history):
+        return 2* ONE_AD
+    return 0
+
+def stabilised(history):
+    if len(history) < 4:
+        return False
+    u_0 = history[-1]["used"]
+    u_1 = history[-2]["used"]
+    u_2 = history[-3]["used"]
+    u_3 = history[-4]["used"]
+    if abs(u_0 - u_1) > 0.05 * TOTAL_POP:
+        return False
+    if abs(u_0 - u_1) > 0.05 * TOTAL_POP:
+        return False
+    if abs(u_0 - u_1) > 0.05 * TOTAL_POP:
+        return False
+    return True
+
+def spend_invest_pop_aware(history):
+    used = history[-1]["used"]
+    max_cap = history[-1]["max_capacity"]
+    bonus_max_cap = sum([history[-1][f"invest{i}"] for i in range(6)])
+    if used / (max_cap + bonus_max_cap) > BUS_EFFICIENCY:
+        if used / (max_cap + bonus_max_cap) < 0.75 * TOTAL_POP:
+            return ONE_BUS
+    return 0
+
 
 SPEND_AD = {
     "basic" : spend_ad_basic,
     "constant": spend_ad_constant,
     "try_ad" : spend_ad_try,
-
-    "basic_with_bound" : 0,
+    "basic_with_memory" : spend_ad_basic,
+    "pop_aware" : spend_ad_pop_aware,
 
 # Fituje mezi modrou zelenou
     "" : 0,
@@ -131,7 +175,9 @@ SPEND_AD = {
 SPEND_INVEST = {
     "basic" : spend_invest_basic,
     "constant": spend_invest_constant,
-    "try_ad" : spend_invest_constant
+    "try_ad" : spend_invest_constant,
+    "basic_with_memory" : spend_invest_basic_memory,
+    "pop_aware" : spend_invest_pop_aware,
 }
 
 

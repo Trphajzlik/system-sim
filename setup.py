@@ -1,5 +1,6 @@
 from copy import deepcopy
 from rules import incl, ticket_sales, expenses, spend_ad, spend_invest, SPEND_AD, SPEND_INVEST
+from constants import TOTAL_POP
 
 N_STATES = 12
 
@@ -8,9 +9,6 @@ NAMES = [
     "ad0", "ad1", "ad2",
     "invest0", "invest1", "invest2", "invest3", "invest4", "invest5"
 ]
-
-TOTAL_POP = 500000.0
-
 
 BASE_OPINION = 2/5
 INIT_USED = TOTAL_POP * BASE_OPINION
@@ -93,7 +91,11 @@ def GET_RULES(ad_strategy, invest_strategy):
     rules["invest0"] = (lambda h: 0.01 * w_spend_invest(invest_strategy, h))
     return rules
 
-TESTED_STRATEGIES = [("basic","basic"), ("constant", "constant"), ("try_ad", "try_ad")]
+TESTED_STRATEGIES = [
+    ("basic","basic"), ("constant", "constant"),
+    ("try_ad", "try_ad"), ("basic_with_memory","basic_with_memory"),
+    ("pop_aware", "pop_aware")
+]
 
 STEPS = 120
 OUTPUT_PATH = "history.csv"

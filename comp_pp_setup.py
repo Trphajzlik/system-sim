@@ -8,31 +8,37 @@ C_N_GRAPHS = 2
 
 C_GRAPH_NAMES = [
     "used%",
-    "money"
+    "money",
 ]
 
 C_GRAPH_PATHS = {
     "used%" : "c_graph0.png",
-    "money" : "c_graph1.png"
+    "money" : "c_graph1.png",
 }
 
 C_COLOURS = {
     "used%" : {
         get_name(("basic", "basic")) : 'r',
         get_name(("constant", "constant")) : 'g',
-        get_name(("try_ad", "try_ad")) :'b'
+        get_name(("try_ad", "try_ad")) :'b',
+        get_name(("basic_with_memory","basic_with_memory")) : 'y',
+        get_name(("pop_aware", "pop_aware")) : 'm',
     },
     "money" : {
         get_name(("basic", "basic")) : 'r',
         get_name(("constant", "constant")) : 'g',
-        get_name(("try_ad", "try_ad")) : 'b'
+        get_name(("try_ad", "try_ad")) : 'b',
+        get_name(("basic_with_memory","basic_with_memory")) : 'y',
+        get_name(("pop_aware", "pop_aware")) : 'm',
     },
 }
 
 C_TESTED_NAMES = [
     get_name(("basic", "basic")),
     get_name(("constant", "constant")),
-    get_name(("try_ad", "try_ad"))
+    get_name(("try_ad", "try_ad")),
+    get_name(("basic_with_memory","basic_with_memory")),
+    get_name(("pop_aware", "pop_aware")),
 ]
 
 def transform0(s):
@@ -43,7 +49,7 @@ def transform1(s):
 
 C_TRANSFORM = {
     "used%" : transform0,
-    "money" : transform1
+    "money" : transform1,
 }
 
 
