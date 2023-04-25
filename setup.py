@@ -1,5 +1,5 @@
 from copy import deepcopy
-from rules import incl, ticket_sales, expenses, spend_ad, spend_invest, SPEND_AD, SPEND_INVEST
+from rules import incl, ticket_sales, expenses, spend_ad, spend_invest, SPEND_STRATEGIES
 from constants import TOTAL_POP
 
 N_STATES = 12
@@ -55,12 +55,6 @@ def w_incl(history):
     assert next_used <= TOTAL_POP
     return next_used
 
-def w_spend_ad(ad_strategy, history):
-    return spend_ad(ad_strategy, history)
-
-def w_spend_invest(invest_strategy, history):
-    return spend_invest(invest_strategy, history)
-
 RULES = {
     # Logic if population chooses to use public transport
     "used": w_incl,
@@ -84,27 +78,24 @@ RULES = {
     "invest5" : (lambda h: h[-1]["invest4"])
 }
 
-def GET_RULES(ad_strategy, invest_strategy):
+def GET_RULES(strategy):
     rules = deepcopy(RULES)
-    rules["budget"] = (lambda h: h[-1]["budget"] + w_ticket_sales(h[-1]) - w_expenses(h[-1]) - w_spend_ad(ad_strategy, h) - w_spend_invest(invest_strategy, h))
-    rules["ad0"] = (lambda h: w_spend_ad(ad_strategy, h))
-    rules["invest0"] = (lambda h: 0.01 * w_spend_invest(invest_strategy, h))
+    rules["budget"] = (lambda h: h[-1]["budget"] + w_ticket_sales(h[-1]) - w_expenses(h[-1]) - spend_ad(strategy, h) - spend_invest(strategy, h))
+    rules["ad0"] = (lambda h: spend_ad(strategy, h))
+    rules["invest0"] = (lambda h: 0.01 * spend_invest(strategy, h))
     return rules
 
 TESTED_STRATEGIES = [
-    ("basic","basic"), ("constant", "constant"),
-    ("try_ad", "try_ad"), ("basic_with_memory","basic_with_memory"),
-    ("pop_aware", "pop_aware")
+    "basic", "constant", "try_ad", "basic_with_memory", "pop_aware",
 ]
 
 STEPS = 120
 OUTPUT_PATH = "history.csv"
 
-def check_model(ad_strategy, invest_strategy):
+def check_model(strategy):
     for d in [NAMES, INIT_STATE, RULES]:
         assert N_STATES == len(d)
     for d in [INIT_STATE, RULES]:
         for n in NAMES:
             assert n in d
-    assert ad_strategy in SPEND_AD
-    assert invest_strategy in SPEND_INVEST
+    assert strategy in SPEND_STRATEGIES

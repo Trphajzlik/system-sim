@@ -156,12 +156,12 @@ def spend_invest_pop_aware(history):
     return 0
 
 
-SPEND_AD = {
-    "basic" : spend_ad_basic,
-    "constant": spend_ad_constant,
-    "try_ad" : spend_ad_try,
-    "basic_with_memory" : spend_ad_basic,
-    "pop_aware" : spend_ad_pop_aware,
+SPEND_STRATEGIES = {
+    "basic" : (spend_ad_basic, spend_invest_basic),
+    "constant": (spend_ad_constant, spend_invest_constant),
+    "try_ad" : (spend_ad_try, spend_invest_constant),
+    "basic_with_memory" : (spend_ad_basic, spend_invest_basic_memory),
+    "pop_aware" : (spend_ad_pop_aware, spend_invest_pop_aware),
 
 # Fituje mezi modrou zelenou
     "" : 0,
@@ -172,17 +172,10 @@ SPEND_AD = {
 # Nastaví max_cap na ideál a snaží se nacpat lidi do busů
     "" : 0,
 }
-SPEND_INVEST = {
-    "basic" : spend_invest_basic,
-    "constant": spend_invest_constant,
-    "try_ad" : spend_invest_constant,
-    "basic_with_memory" : spend_invest_basic_memory,
-    "pop_aware" : spend_invest_pop_aware,
-}
 
 
 def spend_ad(strategy, history):
-    return SPEND_AD[strategy](history)
+    return SPEND_STRATEGIES[strategy][0](history)
 
 def spend_invest(strategy, history):
-    return SPEND_INVEST[strategy](history)
+    return SPEND_STRATEGIES[strategy][1](history)

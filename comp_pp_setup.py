@@ -1,9 +1,5 @@
 from setup import TOTAL_POP
 
-def get_name(strat):
-    ad_strat, spend_strat = strat
-    return f"{ad_strat}|{spend_strat}"
-
 C_N_GRAPHS = 2
 
 C_GRAPH_NAMES = [
@@ -18,27 +14,24 @@ C_GRAPH_PATHS = {
 
 C_COLOURS = {
     "used%" : {
-        get_name(("basic", "basic")) : 'r',
-        get_name(("constant", "constant")) : 'g',
-        get_name(("try_ad", "try_ad")) :'b',
-        get_name(("basic_with_memory","basic_with_memory")) : 'y',
-        get_name(("pop_aware", "pop_aware")) : 'm',
+        "basic" : 'r',
+        "constant" : 'g',
+        "try_ad" :'b',
+        "basic_with_memory" : 'y',
+        "pop_aware" : 'm',
     },
     "money" : {
-        get_name(("basic", "basic")) : 'r',
-        get_name(("constant", "constant")) : 'g',
-        get_name(("try_ad", "try_ad")) : 'b',
-        get_name(("basic_with_memory","basic_with_memory")) : 'y',
-        get_name(("pop_aware", "pop_aware")) : 'm',
+        "basic" : 'r',
+        "constant" : 'g',
+        "try_ad" : 'b',
+        "basic_with_memory" : 'y',
+        "pop_aware" : 'm',
     },
 }
 
 C_TESTED_NAMES = [
-    get_name(("basic", "basic")),
-    get_name(("constant", "constant")),
-    get_name(("try_ad", "try_ad")),
-    get_name(("basic_with_memory","basic_with_memory")),
-    get_name(("pop_aware", "pop_aware")),
+    "basic", "constant", "try_ad", "basic_with_memory",
+    "pop_aware",
 ]
 
 def transform0(s):
@@ -63,5 +56,5 @@ def check_c_pp_setup(tested_strats):
         for _, d in C_COLOURS.items():
             assert n in d
     assert len(tested_strats) == len(C_TESTED_NAMES)
-    for a, i in tested_strats:
-        get_name((a,i)) in C_TESTED_NAMES
+    for strat in tested_strats:
+        strat in C_TESTED_NAMES

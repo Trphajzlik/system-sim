@@ -21,9 +21,9 @@ def plot_one(it_history, entry_names, colours, plot_name, output):
     plt.savefig(output)
 
 
-def plot_comparison(histories, graph_names, graph_tested_names, transforms, colours, graph_paths):
+def plot_comparison(histories, graph_names, graph_tested_names, transforms, colours, odir, graph_paths):
     for gname in graph_names:
-        plot_c_one(histories, transforms[gname], graph_tested_names, colours[gname], gname, graph_paths[gname])
+        plot_c_one(histories, transforms[gname], graph_tested_names, colours[gname], gname, odir + graph_paths[gname])
 
 def plot_c_one(histories, transform, tested_names, colours, plot_name, output):
     fig = plt.figure(figsize=(12.8, 9.6))
