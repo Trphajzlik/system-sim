@@ -11,27 +11,27 @@ def expenses(max_cap):
 # Model can be adjusted that it takes the whole history,
 # so you can get creative. Also what param it takes
 
-def spend_ad_basic(history):
+def spend_ad_basic(history, data):
     used = history[-1]["used"]
     max_cap = history[-1]["max_capacity"]
     if used / max_cap < BUS_EFFICIENCY:
         return PRICE_ONE_AD
     return 0
 
-def spend_invest_basic(history):
+def spend_invest_basic(history, data):
     used = history[-1]["used"]
     max_cap = history[-1]["max_capacity"]
     if used / max_cap > BUS_EFFICIENCY:
         return PRICE_ONE_BUS
     return 0
 
-def spend_ad_constant(history):
+def spend_ad_constant(history, data):
     return 0
 
-def spend_invest_constant(history):
+def spend_invest_constant(history, data):
     return 0
 
-def spend_ad_try(history):
+def spend_ad_try(history, data):
     l = len(history)
     if l < 40:
         return 0
@@ -39,7 +39,7 @@ def spend_ad_try(history):
         return PRICE_ONE_AD
     return 0
 
-def spend_invest_basic_memory(history):
+def spend_invest_basic_memory(history, data):
     used = history[-1]["used"]
     max_cap = history[-1]["max_capacity"]
     n_bus_build = sum([history[-1][f"invest{i}"] for i in range(6)])
@@ -48,18 +48,18 @@ def spend_invest_basic_memory(history):
     return 0
 
 
-def did_invest(history):
+def did_invest(history, data):
     for i, s in enumerate(history):
         if s["invest0"] > 0:
             return i
     return False
 
-def spend_ad_pop_aware(history):
-    if did_invest(history):
+def spend_ad_pop_aware(history, data):
+    if did_invest(history, data):
         return 2 * PRICE_ONE_AD
     return 0
 
-def stabilised(history):
+def stabilised(history, data):
     if len(history) < 4:
         return False
     u_0 = history[-1]["used"]
@@ -74,7 +74,7 @@ def stabilised(history):
         return False
     return True
 
-def spend_invest_pop_aware(history):
+def spend_invest_pop_aware(history, data):
     used = history[-1]["used"]
     max_cap = history[-1]["max_capacity"]
     n_bus_build = sum([history[-1][f"invest{i}"] for i in range(6)])
@@ -102,8 +102,8 @@ SPEND_STRATEGIES = {
 }
 
 
-def spend_ad(strategy, history):
-    return SPEND_STRATEGIES[strategy][0](history)
+def spend_ad(strategy, history, data):
+    return SPEND_STRATEGIES[strategy][0](history, data)
 
-def spend_invest(strategy, history):
-    return SPEND_STRATEGIES[strategy][1](history)
+def spend_invest(strategy, history, data):
+    return SPEND_STRATEGIES[strategy][1](history, data)

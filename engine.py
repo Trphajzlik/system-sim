@@ -5,13 +5,14 @@ class Engine:
         self.state_names = names
         self.curr_state = init_state
         self.rules = rules
+        self.data = dict()
 
     def step(self):
         self.history.append(deepcopy(self.curr_state))
         self.curr_state.clear()
         for name in self.state_names:
             rule = self.rules[name]
-            self.curr_state[name] = rule(self.history)
+            self.curr_state[name] = rule(self.history, self.data)
 
     def simulate(self, steps):
         for _ in range(steps):
