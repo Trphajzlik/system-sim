@@ -58,12 +58,10 @@ def w_incl(history):
     return next_used
 
 def w_spend_ad(ad_strategy, history):
-    state = history[-1]
-    return spend_ad(ad_strategy, state["used"], state["max_capacity"], state["budget"])
+    return spend_ad(ad_strategy, history)
 
 def w_spend_invest(invest_strategy, history):
-    state = history[-1]
-    return spend_invest(invest_strategy, state["used"], state["max_capacity"], state["budget"])
+    return spend_invest(invest_strategy, history)
 
 RULES = {
     # Logic if population chooses to use public transport
@@ -95,7 +93,7 @@ def GET_RULES(ad_strategy, invest_strategy):
     rules["invest0"] = (lambda h: 0.01 * w_spend_invest(invest_strategy, h))
     return rules
 
-TESTED_STRATEGIES = [("basic","basic"), ("constant", "constant")]
+TESTED_STRATEGIES = [("basic","basic"), ("constant", "constant"), ("try_ad", "try_ad")]
 
 STEPS = 120
 OUTPUT_PATH = "history.csv"

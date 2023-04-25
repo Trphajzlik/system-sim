@@ -19,17 +19,20 @@ C_GRAPH_PATHS = {
 C_COLOURS = {
     "used%" : {
         get_name(("basic", "basic")) : 'r',
-        get_name(("constant", "constant")) : 'g'
+        get_name(("constant", "constant")) : 'g',
+        get_name(("try_ad", "try_ad")) :'b'
     },
     "money" : {
         get_name(("basic", "basic")) : 'r',
-        get_name(("constant", "constant")) : 'g'
+        get_name(("constant", "constant")) : 'g',
+        get_name(("try_ad", "try_ad")) : 'b'
     },
 }
 
 C_TESTED_NAMES = [
     get_name(("basic", "basic")),
-    get_name(("constant", "constant"))
+    get_name(("constant", "constant")),
+    get_name(("try_ad", "try_ad"))
 ]
 
 def transform0(s):

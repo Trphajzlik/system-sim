@@ -1,5 +1,5 @@
 from math import floor
-from constants import CAP50, CAP75, CAP90, CAP100, RUMOR_IMPACT, AD_IMPACT, AD_DROPOFF, BUS_EFFICIENCY, TICKET_COST, FORGET, MEM_RELEVANCE, MEM_WEIGHT
+from constants import CAP50, CAP75, CAP90, CAP100, RUMOR_IMPACT, AD_IMPACT, AD_DROPOFF, AD_PEAK, BUS_EFFICIENCY, TICKET_COST, FORGET, MEM_RELEVANCE, MEM_WEIGHT
 
 # TODO: Review function `incl`, it is the most important
 # part of our model, so it has to do what we want it
@@ -27,7 +27,7 @@ def capacity_opinion(sum_used, max_cap):
 
 def ad_opinion(ads):
     # Spending 500.000 will increase mult opinion by AD_IMPACT%
-    return 1 + 0.01 * ((2 * AD_IMPACT) - AD_IMPACT / (AD_DROPOFF**floor(0.00001 * ads)))
+    return 1 + 0.01 * ((2 * AD_IMPACT) - AD_IMPACT * (AD_DROPOFF**(-floor(AD_PEAK * ads))))
 
 def clamp(i):
     if i < 0:
@@ -83,36 +83,53 @@ def expenses(max_cap):
 # Model can be adjusted that it takes the whole history,
 # so you can get creative. Also what param it takes
 
-def spend_ad_basic(sum_used, max_cap, budget):
+def spend_ad_basic(history):
+    sum_used = history[-1]["used"]
+    max_cap = history[-1]["max_capacity"]
     if sum_used / max_cap < BUS_EFFICIENCY:
         # 0.5 mil
         return 500000
     return 0
 
-def spend_invest_basic(sum_used, max_cap, budget):
+def spend_invest_basic(history):
+    sum_used = history[-1]["used"]
+    max_cap = history[-1]["max_capacity"]
     if sum_used / max_cap > BUS_EFFICIENCY:
         # 5 mil
         return 5000000
     return 0
 
-def spend_ad_constant(sum_used, max_cap, budget):
+def spend_ad_constant(history):
     return 0
 
-def spend_invest_constant(sum_used, max_cap, budget):
+def spend_invest_constant(history):
     return 0
 
+def spend_ad_try(history):
+    l = len(history)
+    if l < 40:
+        return 0
+    if l < 60:
+        return 500000
+    return 0
 
 SPEND_AD = {
     "basic" : spend_ad_basic,
-    "constant": spend_ad_constant
+    "constant": spend_ad_constant,
+    "try_ad" : spend_ad_try
 }
 SPEND_INVEST = {
     "basic" : spend_invest_basic,
-    "constant": spend_invest_constant
+    "constant": spend_invest_constant,
+    "try_ad" : spend_invest_constant
 }
 
-def spend_ad(strategy, sum_used, max_cap, budget):
-    return SPEND_AD[strategy](sum_used, max_cap, budget)
+# Fituje mezi modrou zelenou
+# Fituje mezi modrou červenou
+# Nastaví max_cap na ideál a snaží se nacpat lidi do busů
 
-def spend_invest(strategy, sum_used, max_cap, budget):
-    return SPEND_INVEST[strategy](sum_used, max_cap, budget)
+def spend_ad(strategy, history):
+    return SPEND_AD[strategy](history)
+
+def spend_invest(strategy, history):
+    return SPEND_INVEST[strategy](history)
