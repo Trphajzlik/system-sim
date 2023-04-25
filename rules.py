@@ -1,5 +1,5 @@
 from math import floor
-from constants import TOTAL_POP, CAP_VALS, AD_VALS, RUMOR_IMPACT, BUS_EFFICIENCY, TICKET_COST, FORGET, MEM_RELEVANCE, MEM_WEIGHT, ONE_BUS, ONE_AD
+from constants import TOTAL_POP, CAP_VALS, AD_VALS, RUMOR_IMPACT, BUS_EFFICIENCY, TICKET_COST, FORGET, MEM_RELEVANCE, MEM_WEIGHT, ONE_BUS, ONE_AD, AD_REL_USED
 # TODO: Review function `incl`, it is the most important
 # part of our model, so it has to do what we want it
 # to do!
@@ -25,7 +25,7 @@ def capacity_opinion(sum_used, max_cap):
     return lin_interpolate_set(ratio, CAP_VALS)
 
 def ad_opinion(ads):
-    return 1 + lin_interpolate_set(ads, AD_VALS)
+    return lin_interpolate_set(ads, AD_VALS)
 
 def clamp(i):
     if i < 0:
@@ -68,7 +68,7 @@ def incl(pop_c, relevant_history, ads):
     else:
         op_weig = (op_cap + op_mem * MEM_WEIGHT) / (MEM_WEIGHT + 1)
 
-    return used * clamp(op_weig * op_a) + (pop_c - used) * clamp(RUMOR_IMPACT * op_weig * op_a)
+    return used * clamp(op_weig + AD_REL_USED * op_a) + (pop_c - used) * clamp(RUMOR_IMPACT * op_weig + op_a)
 
 
 def ticket_sales(sum_used):
