@@ -1,5 +1,5 @@
 from math import floor
-from constants import CAP50, CAP75, CAP90, CAP100, RUMOR_IMPACT, AD_IMPACT, AD_DROPOFF, AD_PEAK, BUS_EFFICIENCY, TICKET_COST, FORGET, MEM_RELEVANCE, MEM_WEIGHT
+from constants import CAP_VALS, AD_VALS, RUMOR_IMPACT, BUS_EFFICIENCY, TICKET_COST, FORGET, MEM_RELEVANCE, MEM_WEIGHT
 
 # TODO: Review function `incl`, it is the most important
 # part of our model, so it has to do what we want it
@@ -8,26 +8,25 @@ from constants import CAP50, CAP75, CAP90, CAP100, RUMOR_IMPACT, AD_IMPACT, AD_D
 def lin_interpolate(x, x_0, y_0, x_1, y_1):
     return y_0 * (x_1 - x) / (x_1 - x_0) + y_1 * (x - x_0) / (x_1 - x_0)
 
+def lin_interpolate_set(x, vals):
+    # We assume that xs are ordered
+    if x < vals[0][0]:
+        return vals[0][1]
+    if x > vals[-1][0]:
+        return vals[-1][1]
+    x_l, y_l = vals[0]
+    for x_u, y_u in vals[1:]:
+        if x < x_u:
+            return lin_interpolate(x, x_l, y_l, x_u, y_u)
+        x_l, y_l = x_u, y_u
+    raise RuntimeError("Bug in linear interpolation!")
+
 def capacity_opinion(sum_used, max_cap):
     ratio = sum_used / max_cap
-    cap = 0
-    if ratio < 0.5:
-        cap = CAP50
-    elif ratio < 0.75:
-        cap = lin_interpolate(ratio, 0.5, CAP50, 0.75, CAP75)
-    elif ratio < 0.9:
-        cap = lin_interpolate(ratio, 0.75, CAP75, 0.9, CAP90)
-    elif ratio < 1.0:
-        cap = lin_interpolate(ratio, 0.9, CAP90, 1.0, CAP100)
-    else: # Some didn't even get into bus
-        cap = CAP100
-    # We wont differentiate between personal experience
-    # and rummors so we can more easily do "memory"
-    return cap
+    return lin_interpolate_set(ratio, CAP_VALS)
 
 def ad_opinion(ads):
-    # Spending 500.000 will increase mult opinion by AD_IMPACT%
-    return 1 + 0.01 * ((2 * AD_IMPACT) - AD_IMPACT * (AD_DROPOFF**(-floor(AD_PEAK * ads)))) - AD_IMPACT * 0.01
+    return 1 + lin_interpolate_set(ads, AD_VALS)
 
 def clamp(i):
     if i < 0:
@@ -116,7 +115,18 @@ def spend_ad_try(history):
 SPEND_AD = {
     "basic" : spend_ad_basic,
     "constant": spend_ad_constant,
-    "try_ad" : spend_ad_try
+    "try_ad" : spend_ad_try,
+
+    "basic_with_bound" : 0,
+
+# Fituje mezi modrou zelenou
+    "" : 0,
+
+# Fituje mezi modrou červenou
+    "" : 0,
+
+# Nastaví max_cap na ideál a snaží se nacpat lidi do busů
+    "" : 0,
 }
 SPEND_INVEST = {
     "basic" : spend_invest_basic,
@@ -124,9 +134,6 @@ SPEND_INVEST = {
     "try_ad" : spend_invest_constant
 }
 
-# Fituje mezi modrou zelenou
-# Fituje mezi modrou červenou
-# Nastaví max_cap na ideál a snaží se nacpat lidi do busů
 
 def spend_ad(strategy, history):
     return SPEND_AD[strategy](history)
