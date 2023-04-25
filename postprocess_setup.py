@@ -39,8 +39,8 @@ def transform0(s):
         "max_c" : s["max_capacity"],
         "c75" : s["max_capacity"] * 0.75,
         "eff_c" : s["max_capacity"] * BUS_EFFICIENCY,
-        "invested" : TOTAL_POP * s["invest0"] * 0.1 / 50000,
-        "ad_bought" : TOTAL_POP * s["ad0"] * 0.1 / 500000
+        "invested" : TOTAL_POP * s["invest0"] * 0.1,
+        "ad_bought" : TOTAL_POP * s["ad0"] * 0.1
     }
 
 def transform1(s):

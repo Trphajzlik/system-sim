@@ -1,17 +1,17 @@
-CAP_VALS = [
+OP_CAP_VALS = [
     (0.5,  1.0),
     (0.75, 0.9),
     (0.9,  0.4),
     (1.0,  0.1)
 ]
 
-AD_VALS = [
-    (      0.0, 0.0),
-    ( 500000.0, 0.05),
-    (1000000.0, 0.10),
-    (1500000.0, 0.125),
-    (2000000.0, 0.1375),
-    (2500000.0, 0.14),
+OP_AD_VALS = [
+    (0.0, 0.0),
+    (1.0, 0.05),
+    (2.0, 0.10),
+    (3.0, 0.125),
+    (4.0, 0.1375),
+    (5.0, 0.14),
 ]
 
 RUMOR_IMPACT = 0.2
@@ -23,9 +23,11 @@ MEM_WEIGHT = 1.5
 MEM_RELEVANCE = 0.05
 
 BUS_EFFICIENCY = 0.6
-TICKET_COST = 2000
+TICKET_COST = 2000.0
+FUEL_COST_PER_CAP = TICKET_COST * BUS_EFFICIENCY
 
-ONE_BUS = 5000000
-ONE_AD = 500000
+PRICE_ONE_BUS = 5000000.0
+PRICE_ONE_AD = 500000.0
+ONE_BUS_CAPACITY = 5000.0
 
 TOTAL_POP = 500000.0

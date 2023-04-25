@@ -1,6 +1,7 @@
 from copy import deepcopy
-from rules import incl, ticket_sales, expenses, spend_ad, spend_invest, SPEND_STRATEGIES
-from constants import TOTAL_POP
+from public_rules import incl
+from rules import ticket_sales, expenses, spend_ad, spend_invest, SPEND_STRATEGIES
+from constants import TOTAL_POP, ONE_BUS_CAPACITY, PRICE_ONE_AD, PRICE_ONE_BUS
 
 N_STATES = 12
 
@@ -18,20 +19,25 @@ INIT_BUDGET = 50 * 10**6 # 50 mil
 
 INIT_STATE = {
     # How many have used public transport in the last month
+    # In `persons`
     "used" : INIT_USED,
 
     # Max capacity of public transport
+    # In `persons`
     "max_capacity" : INIT_MAX_CAP,
 
     # Budget of the city
     # We allow them to go into debt without any penalty
+    # In `currency`
     "budget" : INIT_BUDGET,
 
     # States handling ads
+    # In `currency / PRICE_ONE_AD`
     "ad0" : 0, "ad1" : 0, "ad2" : 0,
 
     # States handling investments into increasing
     # capacity of public transport
+    # In `currency / PRICE_ONE_BUS`
     "invest0" : 0, "invest1" : 0, "invest2" : 0,
     "invest3" : 0, "invest4" : 0, "invest5" : 0
 }
@@ -42,16 +48,20 @@ def GET_INIT_STATE():
 # Wrapper and helper functions for rules
 
 def w_ticket_sales(state):
+    # In `currency`
     return ticket_sales(state["used"])
 
 def w_expenses(state):
+    # In `currency`
     return expenses(state["max_capacity"])
 
 def w_incl(history):
-    ads = sum([history[-1][f"ad{i}"] for i in range(3)])
+    # In `persons`, returns how many will use this month
+    n_ads = sum([history[-1][f"ad{i}"] for i in range(3)])
     relevant_history = list(map(lambda s: (s["used"], s["max_capacity"]), history))
-    next_used = incl(TOTAL_POP, relevant_history, ads)
+    next_used = incl(relevant_history, n_ads)
     # Only up to 100% of citizens can travel
+    assert next_used >= 0
     assert next_used <= TOTAL_POP
     return next_used
 
@@ -60,7 +70,7 @@ RULES = {
     "used": w_incl,
 
     # Capacity increases after 6 months after deciding to invest
-    "max_capacity" : (lambda h: h[-1]["max_capacity"] + h[-1]["invest5"]),
+    "max_capacity" : (lambda h: h[-1]["max_capacity"] + ONE_BUS_CAPACITY * h[-1]["invest5"]),
 
     # Budget changes based on ticket sales, buying fuel,
     # spending on ads, and spending on buying new buses
@@ -81,8 +91,8 @@ RULES = {
 def GET_RULES(strategy):
     rules = deepcopy(RULES)
     rules["budget"] = (lambda h: h[-1]["budget"] + w_ticket_sales(h[-1]) - w_expenses(h[-1]) - spend_ad(strategy, h) - spend_invest(strategy, h))
-    rules["ad0"] = (lambda h: spend_ad(strategy, h))
-    rules["invest0"] = (lambda h: 0.01 * spend_invest(strategy, h))
+    rules["ad0"] = (lambda h: spend_ad(strategy, h) / PRICE_ONE_AD)
+    rules["invest0"] = (lambda h: spend_invest(strategy, h) / PRICE_ONE_BUS)
     return rules
 
 TESTED_STRATEGIES = [
