@@ -17,7 +17,7 @@ C_GRAPH_NAMES = [
 ]
 
 C_GRAPH_PATHS = {
-    "used%" : "c_graph0.png",
+    "used%" : "int_used.png",
     "try_ads" : "try_ads.png",
     "try_ads_b" : "try_ads_b.png",
     "buy_opt" : "buy_opt.png",
@@ -26,7 +26,17 @@ C_GRAPH_PATHS = {
     "ab_opt_b" : "ab_opt_b.png",
     "abc_opt" : "abc_opt.png",
     "abc_opt_b" : "abc_opt_b.png",
-    "money" : "c_graph1.png",
+    "money" : "int_money.png",
+}
+
+INTERESTING_COLOURS = {
+    "basic" : 'r',
+    "constant" : 'g',
+    "basic_with_memory" : 'b',
+    "pop_aware" : 'c',
+    "buy_opt80" : 'k',
+    "ab_opt90" : 'm',
+    "abc_opt90" : 'y',
 }
 
 TRY_AD_COLOURS = {
@@ -66,14 +76,8 @@ ABC_OPT_COLOURS = {
 }
 
 C_COLOURS = {
-    "used%" : {
-        "basic" : 'r',
-        "constant" : 'r',
-        "try_ad1" :'r',
-        "basic_with_memory" : 'r',
-        "pop_aware" : 'r',
-        "try_ad_once" : 'r',
-    },
+    "used%" : INTERESTING_COLOURS,
+    "money" : INTERESTING_COLOURS,
     "try_ads" : TRY_AD_COLOURS,
     "try_ads_b" : TRY_AD_COLOURS,
     "buy_opt" : BUY_OPT_COLOURS,
@@ -82,30 +86,6 @@ C_COLOURS = {
     "ab_opt_b" : AB_OPT_COLOURS,
     "abc_opt" : ABC_OPT_COLOURS,
     "abc_opt_b" : ABC_OPT_COLOURS,
-    "money" : {
-        "basic" : 'r',
-        "constant" : 'r',
-        "try_ad1" : 'r',
-        "basic_with_memory" : 'r',
-        "pop_aware" : 'r',
-        "try_ad2" : 'r',
-        "try_ad_once" : 'r',
-        "buy_opt70" : 'g',
-        "buy_opt75" : 'b',
-        "buy_opt80" : 'c',
-        "buy_opt85" : 'm',
-        "buy_opt90" : 'y',
-        "ab_opt70" : 'g',
-        "ab_opt75" : 'b',
-        "ab_opt80" : 'c',
-        "ab_opt85" : 'm',
-        "ab_opt90" : 'y',
-        "abc_opt70" : 'g',
-        "abc_opt75" : 'b',
-        "abc_opt80" : 'c',
-        "abc_opt85" : 'm',
-        "abc_opt90" : 'y',
-    },
 }
 
 def get_used_p(s):
@@ -120,13 +100,12 @@ C_TRANSFORM = {
     "buy_opt" : get_used_p,
     "ab_opt" : get_used_p,
     "abc_opt" : get_used_p,
+    "money" : get_budget,
     "try_ads_b" : get_budget,
     "buy_opt_b" : get_budget,
     "ab_opt_b" : get_budget,
     "abc_opt_b" : get_budget,
-    "money" : get_budget,
 }
-
 
 def check_c_pp_setup(tested_strats):
     for d in [C_GRAPH_NAMES, C_GRAPH_PATHS, C_COLOURS, C_TRANSFORM]:

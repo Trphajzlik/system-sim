@@ -10,8 +10,8 @@ GRAPH_NAMES = [
 ]
 
 GRAPH_PATHS = {
-    "used" : "graph0.png",
-    "money" : "graph1.png"
+    "used" : "used.png",
+    "money" : "budget.png"
 }
 
 GRAPH_ENTRY_NAMES = {
