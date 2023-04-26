@@ -11,6 +11,7 @@ from engine import Engine
 from post_process import plot_all, plot_comparison
 
 OUTPUT_DIR = "data/"
+CC_DIR = "ccg/"
 
 def _main():
     histories = dict()
@@ -27,7 +28,7 @@ def _main():
         engine.dump_history(OUTPUT_DIR + prefix + OUTPUT_PATH)
         plot_all(engine.history, GRAPH_NAMES, GRAPH_ENTRY_NAMES, TRANSFORM, COLOURS, OUTPUT_DIR + prefix, GRAPH_PATHS)
         histories[strategy] = deepcopy(engine.history)
-    plot_comparison(histories, C_GRAPH_NAMES, TESTED_STRATEGIES, C_TRANSFORM, C_COLOURS, OUTPUT_DIR, C_GRAPH_PATHS)
+    plot_comparison(histories, C_GRAPH_NAMES, C_TRANSFORM, C_COLOURS, OUTPUT_DIR + CC_DIR, C_GRAPH_PATHS)
 
 if __name__ == "__main__":
     _main()

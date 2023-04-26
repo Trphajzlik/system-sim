@@ -14,7 +14,7 @@ def plot_one(it_history, entry_names, colours, plot_name, output):
         for name in entry_names:
             ypoints[name].append(val[name])
     for name in entry_names:
-        plt.plot(xpoints, ypoints[name], colours[name], label=name, markersize=1)
+        plt.plot(xpoints, ypoints[name], colours[name], label=name, markersize=1, linewidth=1)
     plt.title(plot_name)
     plt.grid(linestyle=':')
     leg = plt.legend(loc='lower right', shadow=True, fancybox=True)
@@ -23,15 +23,15 @@ def plot_one(it_history, entry_names, colours, plot_name, output):
     plt.close()
 
 
-def plot_comparison(histories, graph_names, graph_tested_names, transforms, colours, odir, graph_paths):
+def plot_comparison(histories, graph_names, transforms, colours, odir, graph_paths):
     for gname in graph_names:
-        plot_c_one(histories, transforms[gname], graph_tested_names, colours[gname], gname, odir + graph_paths[gname])
+        plot_c_one(histories, transforms[gname], colours[gname], gname, odir + graph_paths[gname])
 
-def plot_c_one(histories, transform, tested_names, colours, plot_name, output):
+def plot_c_one(histories, transform, colours, plot_name, output):
     fig = plt.figure(figsize=(12.8, 9.6))
     fig.clear()
     xpoints = []
-    ypoints = {name : [] for name in tested_names}
+    ypoints = {name : [] for name in colours}
     ny = None
     for l, history in histories.items():
         if ny is None:
@@ -41,10 +41,10 @@ def plot_c_one(histories, transform, tested_names, colours, plot_name, output):
 
     for i in range(ny):
         xpoints.append(i)
-        for name in tested_names:
+        for name in colours:
             ypoints[name].append(transform(histories[name][i]))
-    for name in tested_names:
-        plt.plot(xpoints, ypoints[name], colours[name], label=name, markersize=1)
+    for name in colours:
+        plt.plot(xpoints, ypoints[name], colours[name], label=name, markersize=1, linewidth=1)
     plt.title(plot_name)
     plt.grid(linestyle=':')
     leg = plt.legend(loc='lower right', shadow=True, fancybox=True)
