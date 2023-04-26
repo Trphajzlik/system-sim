@@ -1,11 +1,12 @@
 from setup import TOTAL_POP
 from rules import SPEND_STRATEGIES
 
-C_N_GRAPHS = 12
+C_N_GRAPHS = 13
 
 C_GRAPH_NAMES = [
     "used%",
     "try_ads",
+    "max_capacity",
     "try_ads_b",
     "buy_opt",
     "buy_opt_b",
@@ -20,6 +21,7 @@ C_GRAPH_NAMES = [
 
 C_GRAPH_PATHS = {
     "used%" : "int_used.png",
+    "max_capacity" : "int_max_cap.png",
     "try_ads" : "try_ads.png",
     "try_ads_b" : "try_ads_b.png",
     "buy_opt" : "buy_opt.png",
@@ -93,6 +95,7 @@ ABC_OPT_COLOURS = {
 C_COLOURS = {
     "used%" : INTERESTING_COLOURS,
     "money" : INTERESTING_COLOURS,
+    "max_capacity" : INTERESTING_COLOURS,
     "try_ads" : TRY_AD_COLOURS,
     "try_ads_b" : TRY_AD_COLOURS,
     "buy_opt" : BUY_OPT_COLOURS,
@@ -111,9 +114,13 @@ def get_used_p(s):
 def get_budget(s):
     return s["budget"]
 
+def get_max_cap(s):
+    return s["max_capacity"]
+
 C_TRANSFORM = {
     "used%" : get_used_p,
     "try_ads" : get_used_p,
+    "max_capacity" : get_max_cap,
     "buy_opt" : get_used_p,
     "db_opt" : get_used_p,
     "ab_opt" : get_used_p,
