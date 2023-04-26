@@ -1,4 +1,5 @@
 from setup import TOTAL_POP
+from rules import SPEND_STRATEGIES
 
 C_N_GRAPHS = 2
 
@@ -15,23 +16,58 @@ C_GRAPH_PATHS = {
 C_COLOURS = {
     "used%" : {
         "basic" : 'r',
-        "constant" : 'g',
-        "try_ad" :'b',
-        "basic_with_memory" : 'y',
-        "pop_aware" : 'm',
+        "constant" : 'r',
+        "try_ad" :'r',
+        "basic_with_memory" : 'r',
+        "pop_aware" : 'r',
+        "try_ad2" : 'r',
+        "try_ad_once" : 'r',
+        "buy_opt70" : 'g',
+        "buy_opt75" : 'b',
+        "buy_opt80" : 'c',
+        "buy_opt85" : 'm',
+        "buy_opt90" : 'y',
+        "ab_opt70" : 'g',
+        "ab_opt75" : 'b',
+        "ab_opt80" : 'c',
+        "ab_opt85" : 'm',
+        "ab_opt90" : 'y',
+        "abc_opt70" : 'g',
+        "abc_opt75" : 'b',
+        "abc_opt80" : 'c',
+        "abc_opt85" : 'm',
+        "abc_opt90" : 'y',
     },
     "money" : {
         "basic" : 'r',
-        "constant" : 'g',
-        "try_ad" : 'b',
-        "basic_with_memory" : 'y',
-        "pop_aware" : 'm',
+        "constant" : 'r',
+        "try_ad" : 'r',
+        "basic_with_memory" : 'r',
+        "pop_aware" : 'r',
+        "try_ad2" : 'r',
+        "try_ad_once" : 'r',
+        "buy_opt70" : 'g',
+        "buy_opt75" : 'b',
+        "buy_opt80" : 'c',
+        "buy_opt85" : 'm',
+        "buy_opt90" : 'y',
+        "ab_opt70" : 'g',
+        "ab_opt75" : 'b',
+        "ab_opt80" : 'c',
+        "ab_opt85" : 'm',
+        "ab_opt90" : 'y',
+        "abc_opt70" : 'g',
+        "abc_opt75" : 'b',
+        "abc_opt80" : 'c',
+        "abc_opt85" : 'm',
+        "abc_opt90" : 'y',
     },
 }
 
 C_TESTED_NAMES = [
-    "basic", "constant", "try_ad", "basic_with_memory",
-    "pop_aware",
+#    "basic", "constant", "try_ad", "basic_with_memory",
+#    "pop_aware",
+    n for n in SPEND_STRATEGIES
 ]
 
 def transform0(s):

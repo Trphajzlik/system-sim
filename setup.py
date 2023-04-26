@@ -45,13 +45,15 @@ INIT_STATE = {
 def GET_INIT_STATE():
     return deepcopy(INIT_STATE)
 
-# Wrapper and helper functions for rules
+# Wrapper and helpincler functions for rules
+
+def sum_curr_ads(state):
+    return sum([state[f"ad{i}"] for i in range(3)])
 
 def w_incl(history):
     # In `persons`, returns how many will use this month
-    n_ads = sum([history[-1][f"ad{i}"] for i in range(3)])
-    relevant_history = list(map(lambda s: (s["used"], s["max_capacity"]), history))
-    next_used = incl(relevant_history, n_ads)
+    relevant_history = list(map(lambda s: (s["used"], s["max_capacity"], sum_curr_ads(s)), history))
+    next_used = incl(relevant_history)
     # Only up to 100% of citizens can travel
     assert next_used >= 0
     assert next_used <= TOTAL_POP
@@ -105,7 +107,8 @@ def GET_RULES(strategy):
     return rules
 
 TESTED_STRATEGIES = [
-    "basic", "constant", "try_ad", "basic_with_memory", "pop_aware",
+#    "basic", "constant", "try_ad", "basic_with_memory", "pop_aware",
+    n for n in SPEND_STRATEGIES
 ]
 
 STEPS = 120

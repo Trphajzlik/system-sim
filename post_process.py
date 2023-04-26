@@ -20,6 +20,7 @@ def plot_one(it_history, entry_names, colours, plot_name, output):
     leg = plt.legend(loc='lower right', shadow=True, fancybox=True)
     leg.get_frame().set_alpha(0.5)
     plt.savefig(output)
+    plt.close()
 
 
 def plot_comparison(histories, graph_names, graph_tested_names, transforms, colours, odir, graph_paths):

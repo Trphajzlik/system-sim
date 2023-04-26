@@ -46,38 +46,44 @@ def memory(relevant_history):
     # Returns number in [0,1]
     # Used multiplicatively
     cap_mem = 0
+    ad_mem = 0
     forgetfulness = 1
     mem_offset = 0
     for i in range(len(relevant_history)-2, -1, -1):
-        used, max_c = relevant_history[i]
+        used, max_c, n_ads = relevant_history[i]
         step_op = forgetfulness * capacity_opinion(used, max_c)
+        ad_step_op = forgetfulness * ad_opinion(n_ads)
         cap_mem += step_op
+        ad_mem += ad_step_op
         mem_offset += forgetfulness
         forgetfulness *= FORGET
         if forgetfulness < MEM_RELEVANCE:
             break
     if mem_offset == 0:
-        return None
+        return -1, -1
     cap_mem = cap_mem / mem_offset
+    ad_mem  = ad_mem / mem_offset
     assert cap_mem <= 1
     assert cap_mem >= 0
-    return cap_mem
+    return cap_mem, ad_mem
 
-def incl(relevant_history, n_ads):
+def incl(relevant_history):
     # Returns number of persons that will use public transport
     # Each person has a probability that they will use
     # public transport. This is influenced by:
     #  - rumors about comfort (i.e. capacity)
     #  - ads
-    op_mem = memory(relevant_history)
-    used, max_c = relevant_history[-1]
+    op_mem_c, op_mem_a = memory(relevant_history)
+    used, max_c, n_ads = relevant_history[-1]
     op_cap = capacity_opinion(used, max_c)
     op_a = ad_opinion(n_ads)
-    if op_mem is None:
+    if op_mem_c == -1:
         op_weig = op_cap
+        op_weig_a = op_a
     else:
-        op_weig = (op_cap + op_mem * MEM_WEIGHT) / (MEM_WEIGHT + 1)
+        op_weig = (op_cap + op_mem_c * MEM_WEIGHT) / (MEM_WEIGHT + 1)
+        op_weig_a = (op_a + op_mem_a * MEM_WEIGHT) / (MEM_WEIGHT + 1)
 
-    used_and_will_use = used * clamp(op_weig + AD_REL_USED * op_a)
-    not_used_will_use = (TOTAL_POP - used) * clamp(RUMOR_IMPACT * op_weig + op_a)
+    used_and_will_use = used * clamp(op_weig + AD_REL_USED * op_weig_a)
+    not_used_will_use = (TOTAL_POP - used) * clamp(RUMOR_IMPACT * op_weig + op_weig_a)
     return used_and_will_use + not_used_will_use
