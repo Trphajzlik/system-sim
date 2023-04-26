@@ -11,6 +11,8 @@ from engine import Engine
 from post_process import plot_all, plot_comparison
 
 OUTPUT_DIR = "data/"
+STRAT_DIR = "strat_graphs/"
+CSV_DIR = "csv_files/"
 CC_DIR = "ccg/"
 
 def _main():
@@ -25,8 +27,8 @@ def _main():
         engine.simulate(STEPS)
 
         prefix = f"{strategy}-"
-        engine.dump_history(OUTPUT_DIR + prefix + OUTPUT_PATH)
-        plot_all(engine.history, GRAPH_NAMES, GRAPH_ENTRY_NAMES, TRANSFORM, COLOURS, OUTPUT_DIR + prefix, GRAPH_PATHS)
+        engine.dump_history(OUTPUT_DIR + CSV_DIR + prefix + OUTPUT_PATH)
+        plot_all(engine.history, GRAPH_NAMES, GRAPH_ENTRY_NAMES, TRANSFORM, COLOURS, OUTPUT_DIR + STRAT_DIR + prefix, GRAPH_PATHS)
         histories[strategy] = deepcopy(engine.history)
     plot_comparison(histories, C_GRAPH_NAMES, C_TRANSFORM, C_COLOURS, OUTPUT_DIR + CC_DIR, C_GRAPH_PATHS)
 
