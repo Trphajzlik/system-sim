@@ -39,7 +39,7 @@ INTERESTING_COLOURS = {
     "constant_ad" : 'g',
     "basic_with_memory" : 'b',
     "pop_aware" : 'c',
-    "buy_opt80" : 'k',
+    "buy_opt85" : 'k',
     "ab_opt90" : 'm',
     "db_opt90" : 'tab:purple',
     "abc_opt90" : 'y',
