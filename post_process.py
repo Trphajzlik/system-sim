@@ -16,6 +16,7 @@ def plot_one(it_history, entry_names, colours, plot_name, output):
     for name in entry_names:
         plt.plot(xpoints, ypoints[name], colours[name], label=name, markersize=1)
     plt.title(plot_name)
+    plt.grid(linestyle=':')
     leg = plt.legend(loc='lower right', shadow=True, fancybox=True)
     leg.get_frame().set_alpha(0.5)
     plt.savefig(output)
@@ -44,6 +45,7 @@ def plot_c_one(histories, transform, tested_names, colours, plot_name, output):
     for name in tested_names:
         plt.plot(xpoints, ypoints[name], colours[name], label=name, markersize=1)
     plt.title(plot_name)
+    plt.grid(linestyle=':')
     leg = plt.legend(loc='lower right', shadow=True, fancybox=True)
     leg.get_frame().set_alpha(0.5)
     plt.savefig(output)
