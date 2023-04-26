@@ -1,7 +1,7 @@
 from setup import TOTAL_POP
 from rules import SPEND_STRATEGIES
 
-C_N_GRAPHS = 10
+C_N_GRAPHS = 12
 
 C_GRAPH_NAMES = [
     "used%",
@@ -9,6 +9,8 @@ C_GRAPH_NAMES = [
     "try_ads_b",
     "buy_opt",
     "buy_opt_b",
+    "db_opt",
+    "db_opt_b",
     "ab_opt",
     "ab_opt_b",
     "abc_opt",
@@ -22,6 +24,8 @@ C_GRAPH_PATHS = {
     "try_ads_b" : "try_ads_b.png",
     "buy_opt" : "buy_opt.png",
     "buy_opt_b" : "buy_opt_b.png",
+    "db_opt" : "db_opt.png",
+    "db_opt_b" : "db_opt_b.png",
     "ab_opt" : "ab_opt.png",
     "ab_opt_b" : "ab_opt_b.png",
     "abc_opt" : "abc_opt.png",
@@ -31,16 +35,18 @@ C_GRAPH_PATHS = {
 
 INTERESTING_COLOURS = {
     "basic" : 'r',
-    "constant" : 'g',
+    "no_investment" : 'tab:orange',
+    "constant_ad" : 'g',
     "basic_with_memory" : 'b',
     "pop_aware" : 'c',
     "buy_opt80" : 'k',
     "ab_opt90" : 'm',
+    "db_opt90" : 'tab:purple',
     "abc_opt90" : 'y',
 }
 
 TRY_AD_COLOURS = {
-    "constant" : 'r',
+    "no_investment" : 'r',
     "try_ad1" : 'g',
     "try_ad2" : 'b',
     "try_ad3" : 'c',
@@ -55,6 +61,15 @@ BUY_OPT_COLOURS = {
     "buy_opt80" : 'c',
     "buy_opt85" : 'm',
     "buy_opt90" : 'y',
+}
+
+DB_OPT_COLOURS = {
+    "ab_opt65" : 'r',
+    "ab_opt70" : 'g',
+    "ab_opt75" : 'b',
+    "ab_opt80" : 'c',
+    "ab_opt85" : 'm',
+    "ab_opt90" : 'y',
 }
 
 AB_OPT_COLOURS = {
@@ -82,6 +97,8 @@ C_COLOURS = {
     "try_ads_b" : TRY_AD_COLOURS,
     "buy_opt" : BUY_OPT_COLOURS,
     "buy_opt_b" : BUY_OPT_COLOURS,
+    "db_opt" : DB_OPT_COLOURS,
+    "db_opt_b" : DB_OPT_COLOURS,
     "ab_opt" : AB_OPT_COLOURS,
     "ab_opt_b" : AB_OPT_COLOURS,
     "abc_opt" : ABC_OPT_COLOURS,
@@ -98,11 +115,13 @@ C_TRANSFORM = {
     "used%" : get_used_p,
     "try_ads" : get_used_p,
     "buy_opt" : get_used_p,
+    "db_opt" : get_used_p,
     "ab_opt" : get_used_p,
     "abc_opt" : get_used_p,
     "money" : get_budget,
     "try_ads_b" : get_budget,
     "buy_opt_b" : get_budget,
+    "db_opt_b" : get_budget,
     "ab_opt_b" : get_budget,
     "abc_opt_b" : get_budget,
 }

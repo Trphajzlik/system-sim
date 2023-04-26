@@ -15,7 +15,7 @@ def spend_ad_basic(history, data):
     used = history[-1]["used"]
     max_cap = history[-1]["max_capacity"]
     if used / max_cap < BUS_EFFICIENCY:
-        return PRICE_ONE_AD
+        return 2 * PRICE_ONE_AD
     return 0
 
 def spend_invest_basic(history, data):
@@ -34,10 +34,7 @@ def spend_invest_basic_memory(history, data):
         return PRICE_ONE_BUS
     return 0
 
-def spend_ad_constant(history, data):
-    return 0
-
-def spend_invest_constant(history, data):
+def dont_invest(history, data):
     return 0
 
 def spend_ad_try(amount, history, data):
@@ -51,7 +48,7 @@ def spend_ad_try(amount, history, data):
 def spend_ad_once(history, data):
     l = len(history)
     if l == 41:
-        return PRICE_ONE_AD
+        return 2 * PRICE_ONE_AD
     return 0
 
 def spend_ad_pop_aware(history, data):
@@ -86,18 +83,26 @@ def spend_ad_cont(history, data):
     return 2 * PRICE_ONE_AD
 
 SPEND_STRATEGIES = {
+    "no_investment" : (dont_invest, dont_invest),
+    "constant_ad": ((lambda h, d : 2 * PRICE_ONE_AD), dont_invest),
     "basic" : (spend_ad_basic, spend_invest_basic),
-    "constant": (spend_ad_constant, spend_invest_constant),
-    "try_ad_once" : (spend_ad_once, spend_invest_constant),
+    "try_ad_once" : (spend_ad_once, dont_invest),
 
     "basic_with_memory" : (spend_ad_basic, spend_invest_basic_memory),
     "pop_aware" : (spend_ad_pop_aware, spend_invest_pop_aware),
 
-    "try_ad1" : ((lambda h, d: spend_ad_try(1, h, d)), spend_invest_constant),
-    "try_ad2" : ((lambda h, d: spend_ad_try(2, h, d)), spend_invest_constant),
-    "try_ad3" : ((lambda h, d: spend_ad_try(3, h, d)), spend_invest_constant),
-    "try_ad4" : ((lambda h, d: spend_ad_try(4, h, d)), spend_invest_constant),
-    "try_ad5" : ((lambda h, d: spend_ad_try(5, h, d)), spend_invest_constant),
+    "try_ad1" : ((lambda h, d: spend_ad_try(1, h, d)), dont_invest),
+    "try_ad2" : ((lambda h, d: spend_ad_try(2, h, d)), dont_invest),
+    "try_ad3" : ((lambda h, d: spend_ad_try(3, h, d)), dont_invest),
+    "try_ad4" : ((lambda h, d: spend_ad_try(4, h, d)), dont_invest),
+    "try_ad5" : ((lambda h, d: spend_ad_try(5, h, d)), dont_invest),
+
+    "db_opt65" : (dont_invest, (lambda h, d : spend_invest_buy_opt(0.65, h, d))),
+    "db_opt70" : (dont_invest, (lambda h, d : spend_invest_buy_opt(0.7, h, d))),
+    "db_opt75" : (dont_invest, (lambda h, d : spend_invest_buy_opt(0.75, h, d))),
+    "db_opt80" : (dont_invest, (lambda h, d : spend_invest_buy_opt(0.8, h, d))),
+    "db_opt85" : (dont_invest, (lambda h, d : spend_invest_buy_opt(0.85, h, d))),
+    "db_opt90" : (dont_invest, (lambda h, d : spend_invest_buy_opt(0.9, h, d))),
 
     "buy_opt65" : (spend_ad_basic, (lambda h, d : spend_invest_buy_opt(0.65, h, d))),
     "buy_opt70" : (spend_ad_basic, (lambda h, d : spend_invest_buy_opt(0.7, h, d))),

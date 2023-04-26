@@ -107,7 +107,6 @@ def GET_RULES(strategy):
     return rules
 
 TESTED_STRATEGIES = [
-#    "basic", "constant", "try_ad", "basic_with_memory", "pop_aware",
     n for n in SPEND_STRATEGIES
 ]
 
