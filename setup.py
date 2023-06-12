@@ -110,7 +110,7 @@ TESTED_STRATEGIES = [
     n for n in SPEND_STRATEGIES
 ]
 
-STEPS = 120
+STEPS = 240
 OUTPUT_PATH = "history.csv"
 
 def check_model(strategy):
